@@ -45,16 +45,24 @@ type Game struct{}
 
 func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		player.xPos += 3
+		if !collision(int(player.xPos+3), int(player.yPos)) {
+			player.xPos += 3
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		player.xPos -= 3
+		if !collision(int(player.xPos-3), int(player.yPos)) {
+			player.xPos -= 3
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		player.yPos -= 3
+		if !collision(int(player.xPos), int(player.yPos-3)) {
+			player.yPos -= 3
+		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
-		player.yPos += 3
+		if !collision(int(player.xPos), int(player.yPos+3)) {
+			player.yPos += 3
+		}
 	}
 
 	return nil
@@ -75,12 +83,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// Draw player
-	ebitenutil.DrawRect(screen, player.xPos, player.yPos, 10, 10, color.RGBA{255, 0, 0, 255})
+	ebitenutil.DrawRect(screen, player.xPos, player.yPos, 3, 3, color.RGBA{255, 0, 0, 255})
 
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return scrWidth, scrHeight
+}
+
+func collision(xPos, yPos int) bool {
+	// Get 'tile' player is on
+	x := ((xPos - 55) / (scrHeight / gMapGridHeight))
+	y := ((yPos) / (scrHeight / gMapGridHeight))
+	fmt.Printf("On tile [%d][%d]", x, y)
+	fmt.Println()
+	return gMap[y][x] == 1
 }
 
 func main() {
