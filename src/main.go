@@ -34,9 +34,29 @@ var gMap = [gMapGridHeight][gMapGridWidth]int{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 }
 
+type Player struct {
+	xPos float64
+	yPos float64
+}
+
+var player = Player{200, 200}
+
 type Game struct{}
 
 func (g *Game) Update() error {
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		player.xPos += 3
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		player.xPos -= 3
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
+		player.yPos -= 3
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
+		player.yPos += 3
+	}
+
 	return nil
 }
 
@@ -53,6 +73,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			}
 		}
 	}
+
+	// Draw player
+	ebitenutil.DrawRect(screen, player.xPos, player.yPos, 10, 10, color.RGBA{255, 0, 0, 255})
 
 }
 
