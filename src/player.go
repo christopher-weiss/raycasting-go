@@ -11,11 +11,9 @@ type Player struct {
 	yPos  float64
 	angle float64 // in radians
 	speed float64
-	dx    float64
-	dy    float64
 }
 
-var player = Player{200, 200, 0, 3, 0, 0}
+var player = Player{startingPosX, startingPosY, startingAngle, 3}
 
 func movePlayer() {
 	sinA := math.Sin(player.angle)
@@ -53,15 +51,13 @@ func movePlayer() {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		player.angle -= 0.1
+		player.angle -= rotationSpeed
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		player.angle += 0.1
+		player.angle += rotationSpeed
 	}
 
 	player.xPos += dx
 	player.yPos += dy
-	player.dx = dx
-	player.dy = dy
 }
