@@ -8,22 +8,25 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-func draw(screen *ebiten.Image) {
+func debugDraw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.0f", ebiten.ActualFPS()))
 
 	// Draw game map
-	squareSize := scrHeight / gMapGridHeight
+	tileSize := scrHeight / gMapGridHeight
 	xPadding := 55 // x-axis padding to account for wide window
 	for i := 0; i < gMapGridHeight; i++ {
 		for j := 0; j < gMapGridWidth; j++ {
 			if gMap[i][j] == 1 {
-				ebitenutil.DrawRect(screen, float64(xPadding+(j*squareSize)), float64(i*squareSize), float64(squareSize-1), float64(squareSize-1), color.White)
+				ebitenutil.DrawRect(screen, float64(xPadding+(j*tileSize)), float64(i*tileSize), float64(tileSize-1), float64(tileSize-1), color.White) // square size so that tiles appear in a grid
 			}
 		}
 	}
 
 	// Draw player
-	ebitenutil.DrawRect(screen, player.xPos, player.yPos, 3, 3, color.RGBA{255, 0, 0, 255})
+	ebitenutil.DrawCircle(screen, player.xPos, player.yPos, 3, color.RGBA{255, 0, 0, 255})
+
+	// Draw line of sight
+	ebitenutil.DrawLine(screen, player.xPos, player.yPos, 0, 0, color.RGBA{0, 0, 255, 255})
 }
 
 func collision(xPos, yPos int) bool {
