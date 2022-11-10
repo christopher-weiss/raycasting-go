@@ -10,7 +10,6 @@ type Game struct{}
 
 func (g *Game) Update() error {
 	movePlayer()
-	tickCount++
 
 	return nil
 }
