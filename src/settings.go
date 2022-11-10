@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 const (
 	// window & screen settings
 	winWidth  = 1600
@@ -17,4 +19,11 @@ const (
 	startingPosX  = 200
 	startingPosY  = 200
 	startingAngle = 0
+
+	// engine settings
+	fov        = math.Pi / 3
+	halfFov    = fov / 2
+	numRays    = 100
+	deltaAngle = fov / numRays
+	maxDepth   = 500
 )

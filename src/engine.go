@@ -28,6 +28,13 @@ func debugDraw(screen *ebiten.Image) {
 
 	// Draw line of sight
 	ebitenutil.DrawLine(screen, player.xPos, player.yPos, player.xPos+(math.Cos(player.angle)*20), player.yPos+(math.Sin(player.angle)*20), color.RGBA{0, 0, 255, 255})
+
+	// Draw rays
+	rayAngle := player.angle - halfFov + 0.0001
+	for i := 0; i < numRays; i++ {
+		rayAngle += deltaAngle
+		ebitenutil.DrawLine(screen, player.xPos, player.yPos, player.xPos+(math.Cos(rayAngle)*maxDepth), player.yPos+(math.Sin(rayAngle)*maxDepth), color.RGBA{0, 255, 0, 255})
+	}
 }
 
 func collision(xPos, yPos int) bool {
