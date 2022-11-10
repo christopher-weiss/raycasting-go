@@ -1,35 +1,67 @@
 package main
 
 import (
+	"math"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Player struct {
-	xPos float64
-	yPos float64
+	xPos  float64
+	yPos  float64
+	angle float64 // in radians
+	speed float64
+	dx    float64
+	dy    float64
 }
 
-var player = Player{200, 200}
+var player = Player{200, 200, 0, 3, 0, 0}
 
 func movePlayer() {
-	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		if !collision(int(player.xPos+3), int(player.yPos)) {
-			player.xPos += 3
+	sinA := math.Sin(player.angle)
+	cosA := math.Cos(player.angle)
+	dx := 0.0
+	dy := 0.0
+	speed := player.speed
+	speedSin := speed * sinA
+	speedCos := speed * cosA
+
+	if ebiten.IsKeyPressed(ebiten.KeyW) {
+		if !collision(int(player.xPos+speedCos), int(player.yPos+speedSin)) {
+			dx += speedCos
+			dy += speedSin
 		}
 	}
+	if ebiten.IsKeyPressed(ebiten.KeyS) {
+		if !collision(int(player.xPos-speedCos), int(player.yPos-speedSin)) {
+			dx += -speedCos
+			dy += -speedSin
+
+		}
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
+		if !collision(int(player.xPos+speedSin), int(player.yPos-speedCos)) {
+			dx += speedSin
+			dy += -speedCos
+		}
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
+		if !collision(int(player.xPos-speedSin), int(player.yPos+speedCos)) {
+			dx += -speedSin
+			dy += speedCos
+		}
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		if !collision(int(player.xPos-3), int(player.yPos)) {
-			player.xPos -= 3
-		}
+		player.angle -= 0.1
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		if !collision(int(player.xPos), int(player.yPos-3)) {
-			player.yPos -= 3
-		}
+
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		player.angle += 0.1
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
-		if !collision(int(player.xPos), int(player.yPos+3)) {
-			player.yPos += 3
-		}
-	}
+
+	player.xPos += dx
+	player.yPos += dy
+	player.dx = dx
+	player.dy = dy
 }
