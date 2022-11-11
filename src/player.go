@@ -7,13 +7,15 @@ import (
 )
 
 type Player struct {
-	xPos  float64
-	yPos  float64
-	angle float64 // in radians
-	speed float64
+	xPos         float64
+	yPos         float64
+	angle        float64 // in radians
+	speed        float64
+	currentTileX int
+	currentTileY int
 }
 
-var player = Player{startingPosX, startingPosY, startingAngle, 3}
+var player = Player{startingPosX, startingPosY, startingAngle, 3, 3, 4}
 
 func movePlayer() {
 	sinA := math.Sin(player.angle)
