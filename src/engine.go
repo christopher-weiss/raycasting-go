@@ -52,12 +52,7 @@ func debugDraw(screen *ebiten.Image) {
 		dX := deltaDepth * cosA
 
 		for d := 0; d < 20; d++ {
-			// find which tile has been collided
-			tileColX := int(((xHor - 55) / (scrHeight / gMapGridHeight)))
-			tileColY := int(((yHor) / (scrHeight / gMapGridHeight)))
-
-			fmt.Println(tileColY)
-			if tileColX >= 0 && tileColY >= 0 && tileColY < 10 && tileColX < 15 && gMap[tileColY][tileColX] == 1 {
+			if collisionDetected(xHor, yHor) {
 				break
 			}
 			xHor += float64(dX)
@@ -87,10 +82,7 @@ func debugDraw(screen *ebiten.Image) {
 		for d := 0; d < 20; d++ {
 			// find which tile has been collided
 			if xVert >= 0 && yVert >= 0 {
-				tileColX := int(((xVert - 55) / (scrHeight / gMapGridHeight)))
-				tileColY := int(((yVert) / (scrHeight / gMapGridHeight)))
-
-				if tileColY < 10 && tileColX < 15 && gMap[tileColY][tileColX] == 1 {
+				if collisionDetected(xVert, yVert) {
 					break
 				}
 				xVert += float64(dX)
@@ -112,9 +104,14 @@ func debugDraw(screen *ebiten.Image) {
 	}
 }
 
-func collision(xPos, yPos int) bool {
-	// Get 'tile' player is on
-	player.currentTileX = ((xPos - 55) / (scrHeight / gMapGridHeight))
-	player.currentTileY = ((yPos) / (scrHeight / gMapGridHeight))
-	return gMap[player.currentTileY][player.currentTileX] == 1
+func collisionDetected(xPos, yPos float64) bool {
+	// Get indexes of the tile
+	tileColX := int(((xPos - xOffset) / (scrHeight / gMapGridHeight)))
+	tileColY := int(((yPos) / (scrHeight / gMapGridHeight)))
+
+	if tileColX < 0 || tileColX >= gMapGridWidth || tileColY < 0 || tileColY >= gMapGridHeight {
+		return false
+	}
+
+	return gMap[tileColY][tileColX] == 1
 }

@@ -8,6 +8,7 @@ const (
 	winHeight = 900
 	scrWidth  = winWidth / 2
 	scrHeight = winHeight / 2
+	xOffset   = 55
 
 	// map settings
 	gMapGridWidth  = 15

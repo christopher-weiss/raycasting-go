@@ -27,26 +27,26 @@ func movePlayer() {
 	speedCos := speed * cosA
 
 	if ebiten.IsKeyPressed(ebiten.KeyW) {
-		if !collision(int(player.xPos+speedCos), int(player.yPos+speedSin)) {
+		if !collisionDetected(player.xPos+speedCos, player.yPos+speedSin) {
 			dx += speedCos
 			dy += speedSin
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyS) {
-		if !collision(int(player.xPos-speedCos), int(player.yPos-speedSin)) {
+		if !collisionDetected(player.xPos-speedCos, player.yPos-speedSin) {
 			dx += -speedCos
 			dy += -speedSin
 
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
-		if !collision(int(player.xPos+speedSin), int(player.yPos-speedCos)) {
+		if !collisionDetected(player.xPos+speedSin, player.yPos-speedCos) {
 			dx += speedSin
 			dy += -speedCos
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyD) {
-		if !collision(int(player.xPos-speedSin), int(player.yPos+speedCos)) {
+		if !collisionDetected(player.xPos-speedSin, player.yPos+speedCos) {
 			dx += -speedSin
 			dy += speedCos
 		}
@@ -60,6 +60,11 @@ func movePlayer() {
 		player.angle += rotationSpeed
 	}
 
+	// move player according input
 	player.xPos += dx
 	player.yPos += dy
+
+	// set current tile indexes player is currently on
+	player.currentTileX = ((int(player.xPos) - xOffset) / (scrHeight / gMapGridHeight))
+	player.currentTileY = (int(player.yPos)) / (scrHeight / gMapGridHeight)
 }
