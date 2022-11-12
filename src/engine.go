@@ -9,25 +9,34 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
+var showMapPressed = false
+var showMap = false
+
 func debugDraw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.0f", ebiten.ActualFPS()))
 
 	// Draw game map
 	tileSize := scrHeight / gMapGridHeight
-	xPadding := 55 // x-axis padding to account for wide window
-	for i := 0; i < gMapGridHeight; i++ {
-		for j := 0; j < gMapGridWidth; j++ {
-			if gMap[i][j] == 1 {
-				ebitenutil.DrawRect(screen, float64(xPadding+(j*tileSize)), float64(i*tileSize), float64(tileSize-1), float64(tileSize-1), color.White)
+	if showMap {
+		xPadding := 55 // x-axis padding to account for wide window
+		for i := 0; i < gMapGridHeight; i++ {
+			for j := 0; j < gMapGridWidth; j++ {
+				if gMap[i][j] == 1 {
+					ebitenutil.DrawRect(screen, float64(xPadding+(j*tileSize)), float64(i*tileSize), float64(tileSize-1), float64(tileSize-1), color.RGBA{255, 255, 255, 60})
+				}
 			}
 		}
 	}
 
 	// Draw player
-	ebitenutil.DrawCircle(screen, player.xPos, player.yPos, 3, color.RGBA{255, 0, 0, 255})
+	if showMap {
+		ebitenutil.DrawCircle(screen, player.xPos, player.yPos, 3, color.RGBA{255, 0, 0, 60})
+	}
 
 	// Draw line of sight
-	ebitenutil.DrawLine(screen, player.xPos, player.yPos, player.xPos+(math.Cos(player.angle)*20), player.yPos+(math.Sin(player.angle)*20), color.RGBA{0, 0, 255, 255})
+	if showMap {
+		ebitenutil.DrawLine(screen, player.xPos, player.yPos, player.xPos+(math.Cos(player.angle)*20), player.yPos+(math.Sin(player.angle)*20), color.RGBA{0, 0, 255, 60})
+	}
 
 	// Draw rays
 	rayAngle := player.angle - halfFov + 0.0001
@@ -92,15 +101,24 @@ func debugDraw(screen *ebiten.Image) {
 
 		}
 
-		// depth
+		// depth calculation of ray until closest collision
 		depth := depthHor
 		if depthVert < depthHor {
 			depth = depthVert
 		}
 
+		// projection
+		screenDistance := float64(halfWidth) / math.Tan(halfFov)
+		projHeight := screenDistance / (depth + 0.0001)
+
+		depthColor := 255 / 1
+		ebitenutil.DrawRect(screen, float64(i*scalingFactor), halfHeight-(projHeight/2), scalingFactor, projHeight, color.RGBA{255, 255, 255, uint8(depthColor)})
+
 		rayAngle += deltaAngle
 
-		ebitenutil.DrawLine(screen, player.xPos, player.yPos, player.xPos+(math.Cos(rayAngle)*float64(depth)), player.yPos+(math.Sin(rayAngle)*float64(depth)), color.RGBA{0, 255, 0, 255})
+		if showMap {
+			ebitenutil.DrawLine(screen, player.xPos, player.yPos, player.xPos+(math.Cos(rayAngle)*float64(depth)), player.yPos+(math.Sin(rayAngle)*float64(depth)), color.RGBA{0, 255, 0, 20})
+		}
 	}
 }
 

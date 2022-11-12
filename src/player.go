@@ -15,7 +15,7 @@ type Player struct {
 	currentTileY int
 }
 
-var player = Player{startingPosX, startingPosY, startingAngle, 3, 3, 4}
+var player = Player{startingPosX, startingPosY, startingAngle, playerSpeed, 3, 4}
 
 func movePlayer() {
 	sinA := math.Sin(player.angle)
@@ -58,6 +58,15 @@ func movePlayer() {
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		player.angle += rotationSpeed
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyF1) {
+		if !showMapPressed && !showMap {
+			showMap = !showMap
+			showMapPressed = true
+		} else {
+			showMapPressed = false
+		}
 	}
 
 	// move player according input
