@@ -15,6 +15,12 @@ var showMap = false
 func debugDraw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.0f", ebiten.ActualFPS()))
 
+	// Draw Ceiling
+	ebitenutil.DrawRect(screen, 0, 0, scrWidth, scrHeight/2, color.RGBA{60, 60, 60, 255})
+
+	// Draw floor
+	ebitenutil.DrawRect(screen, 0, scrHeight/2, scrWidth, scrHeight, color.RGBA{20, 20, 20, 255})
+
 	// Draw game map
 	tileSize := scrHeight / gMapGridHeight
 	if showMap {
@@ -108,10 +114,10 @@ func debugDraw(screen *ebiten.Image) {
 		}
 
 		// projection
-		screenDistance := float64(halfWidth) / math.Tan(halfFov)
+		screenDistance := float64(halfWidth*8) / math.Tan(halfFov)
 		projHeight := screenDistance / (depth + 0.0001)
 
-		depthColor := 255 / (1 + math.Pow(depth, 5.0)*0.000001)
+		depthColor := 255 / (1 + math.Pow(depth, 5.0)*0.000000000001)
 		ebitenutil.DrawRect(screen, float64(i*scalingFactor), halfHeight-(projHeight/2), scalingFactor, projHeight, color.RGBA{255, 255, 255, uint8(depthColor)})
 
 		rayAngle += deltaAngle

@@ -14,20 +14,20 @@ const (
 	xOffset = 55
 
 	// map settings
-	gMapGridWidth  = 15
-	gMapGridHeight = 10
+	gMapGridWidth  = 20
+	gMapGridHeight = 15
 
 	// player settings
-	playerSpeed   = 0.4
-	rotationSpeed = 0.03 // radians per tick
+	playerSpeed   = 2
+	rotationSpeed = 0.05 // radians per tick
 	startingPosX  = 200
 	startingPosY  = 200
 	startingAngle = 0
 
 	// engine settings
-	fov           = math.Pi / 3
+	fov           = math.Pi / 4
 	halfFov       = fov / 2
-	numRays       = 200
+	numRays       = 250
 	deltaAngle    = fov / numRays
 	maxDepth      = 500
 	scalingFactor = scrWidth / numRays
