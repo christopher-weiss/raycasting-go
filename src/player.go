@@ -27,26 +27,26 @@ func movePlayer() {
 	speedCos := speed * cosA
 
 	if ebiten.IsKeyPressed(ebiten.KeyW) {
-		if !collisionDetected(player.xPos+speedCos, player.yPos+speedSin) {
+		if collisionDetected(player.xPos+speedCos, player.yPos+speedSin) == 0 {
 			dx += speedCos
 			dy += speedSin
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyS) {
-		if !collisionDetected(player.xPos-speedCos, player.yPos-speedSin) {
+		if collisionDetected(player.xPos-speedCos, player.yPos-speedSin) == 0 {
 			dx += -speedCos
 			dy += -speedSin
 
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
-		if !collisionDetected(player.xPos+speedSin, player.yPos-speedCos) {
+		if collisionDetected(player.xPos+speedSin, player.yPos-speedCos) == 0 {
 			dx += speedSin
 			dy += -speedCos
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyD) {
-		if !collisionDetected(player.xPos-speedSin, player.yPos+speedCos) {
+		if collisionDetected(player.xPos-speedSin, player.yPos+speedCos) == 0 {
 			dx += -speedSin
 			dy += speedCos
 		}
@@ -61,12 +61,16 @@ func movePlayer() {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyF1) {
-		if !showMapPressed && !showMap {
-			showMap = !showMap
-			showMapPressed = true
-		} else {
-			showMapPressed = false
+		if !f1PressedInLastTick {
+			f1PressedInLastTick = true
+			if !showMap {
+				showMap = true
+			} else {
+				showMap = false
+			}
 		}
+	} else {
+		f1PressedInLastTick = false
 	}
 
 	// move player according input

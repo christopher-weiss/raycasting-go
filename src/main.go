@@ -23,6 +23,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
+	loadImage()
 	ebiten.SetWindowSize(winWidth, winHeight)
 	ebiten.SetWindowTitle("Raycasting - Go")
 	if err := ebiten.RunGame(&Game{}); err != nil {

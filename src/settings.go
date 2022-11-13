@@ -11,24 +11,29 @@ const (
 	halfWidth  = scrWidth / 2
 	halfHeight = scrHeight / 2
 
-	xOffset = 55
+	xOffset = 0
 
 	// map settings
 	gMapGridWidth  = 20
 	gMapGridHeight = 15
 
 	// player settings
-	playerSpeed   = 2
-	rotationSpeed = 0.05 // radians per tick
+	playerSpeed   = 0.4
+	rotationSpeed = 0.025 // radians per tick
 	startingPosX  = 200
 	startingPosY  = 200
 	startingAngle = 0
 
 	// engine settings
-	fov           = math.Pi / 4
+	fov           = math.Pi / 3
 	halfFov       = fov / 2
-	numRays       = 250
+	numRays       = 400
 	deltaAngle    = fov / numRays
-	maxDepth      = 500
+	maxDepth      = 1000
 	scalingFactor = scrWidth / numRays
+	wallHeight    = 4
+
+	// texture settings
+	textureSize     = 65
+	halfTextureSize = textureSize / 2
 )
