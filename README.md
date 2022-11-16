@@ -18,3 +18,6 @@ After building the root folder will contain the executable `engine`. Run with `.
 * →: Rotate right
 * ←: Rotate left
 
+### Other
+* F1: Show map
+
