@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -194,6 +195,78 @@ func debugDraw(screen *ebiten.Image) {
 			}
 		}
 	}
+
+	// We need to sort the objects to be displayed according to the viewing angle,
+	// so that objects that are farther away are not drawn over nearer objects
+	sort.Slice(gameObjects, func(p, q int) bool {
+		if math.Cos(player.angle) > 0 {
+			return gameObjects[p].xPos > gameObjects[q].xPos
+		} else {
+			return gameObjects[p].xPos < gameObjects[q].xPos
+		}
+	})
+
+	for sp := 0; sp < len(gameObjects); sp++ {
+		drawStaticSprite(gameObjects[sp], screen)
+	}
+	drawAnimatedSprite(ghostObj, screen)
+
+	if showMap {
+		ebitenutil.DrawCircle(screen, 250, 250, 1, color.White)
+		ebitenutil.DrawCircle(screen, 260, 260, 1, color.RGBA{255, 0, 0, 255})
+	}
+}
+
+func drawStaticSprite(obj GameObject, screen *ebiten.Image) {
+	// calculate delta angle, which is the angle between the players line of sight
+	// and the angle of the plane of the player and the object (theta).
+	// p---->
+	// |\`
+	// | \ `
+	// |  \ ∆` line-of-sight
+	// v   obj
+	theta := math.Atan2((obj.yPos - player.yPos), (obj.xPos - player.xPos))
+	delta := theta - player.angle
+
+	// o
+	if (obj.xPos > 0 && player.angle > math.Pi) || (obj.xPos < 0 && obj.yPos < 0) {
+		delta += math.Pi * 2
+	}
+
+	deltaRays := delta / deltaAngle
+
+	scrXPos := (numRays/2 + deltaRays) * scalingFactor
+	dist := math.Hypot(obj.xPos-player.xPos, obj.yPos-player.yPos)
+	normalizedDist := dist * math.Cos(delta)
+
+	screenDistance := float64(halfWidth) / math.Tan(halfFov)
+	proj := (screenDistance / normalizedDist) / 100
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Scale(proj, proj)
+	options.GeoM.Translate(scrXPos-float64(obj.sprite.width/2), float64(halfHeight)-float64(obj.sprite.height/2)-((proj*100)/2)+70)
+	screen.DrawImage(obj.sprite.sprite.(*ebiten.Image), options)
+}
+
+func drawAnimatedSprite(obj GameObject, screen *ebiten.Image) {
+	theta := math.Atan2(obj.yPos-player.yPos, obj.xPos-player.xPos)
+	delta := theta - player.angle
+	if (obj.xPos > 0 && player.angle > math.Pi) || (obj.xPos < 0 && obj.yPos < 0) {
+		delta += math.Pi * 2
+	}
+	deltaRays := delta / deltaAngle
+	scrXPos := (numRays/2 + deltaRays) * scalingFactor
+	dist := math.Hypot(obj.xPos-player.xPos, obj.yPos-player.yPos)
+	normalizedDist := dist * math.Cos(delta)
+
+	screenDistance := float64(halfWidth) / math.Tan(halfFov)
+	proj := ((screenDistance / normalizedDist) / 100) + 0.2
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Scale(proj, proj)
+	options.GeoM.Translate(scrXPos-float64(obj.sprite.width/2), float64(halfHeight)-float64(obj.sprite.height/2)-((proj*10)/2)+20)
+
+	spriteY := ((tick / 10) % 4) * obj.sprite.height
+
+	screen.DrawImage(ghostSprites.SubImage(image.Rectangle{image.Point{0, spriteY}, image.Point{obj.sprite.width, spriteY + obj.sprite.height}}).(*ebiten.Image), options)
 }
 
 func collisionDetected(xPos, yPos float64) int {

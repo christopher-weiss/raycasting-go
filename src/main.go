@@ -8,8 +8,11 @@ import (
 
 type Game struct{}
 
+var tick = 0
+
 func (g *Game) Update() error {
 	movePlayer()
+	tick++
 
 	return nil
 }
